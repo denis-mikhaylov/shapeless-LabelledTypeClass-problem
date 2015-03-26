@@ -1,2 +1,2 @@
-# shapeless-LabelledTypeClass-problem
-A project to reproduce a problem with Format derivation using LabelledTypeClass
+# shapeless-problem
+Investigation of generic type class derivation
