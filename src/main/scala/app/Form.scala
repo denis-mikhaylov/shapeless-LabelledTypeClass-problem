@@ -2,7 +2,7 @@ package app
 
 import java.util.UUID
 
-import Main._
+import ast._
 import Path.syntax._
 
 object Form {
