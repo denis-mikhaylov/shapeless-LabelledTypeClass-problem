@@ -21,11 +21,11 @@ object Path {
 
 sealed trait Def
 
-sealed trait SeqDef[A <: Def] extends Def
+sealed trait SeqDef[+A ] extends Def
 
-case class StaticSeqDef[A <: Def](items: Seq[A]) extends SeqDef[A]
+case class StaticSeqDef[+A ](items: Seq[A]) extends SeqDef[A]
 
-case class DynamicSeqDef[A <: Def](path: Path, template: A) extends SeqDef[A]
+case class DynamicSeqDef[+A ](path: Path, template: A) extends SeqDef[A]
 
 sealed trait StringDef extends Def
 
@@ -89,7 +89,7 @@ case class DependencyDef(condition: ConditionDef, container: ContainerDef) exten
 
 case class ChoiceDef(value: StringDef, title: LocalizedStringDef) extends Def
 
-case class ViewDef[A <: WidgetDef](title: LocalizedStringDef, prompt: LocalizedStringDef, widget: A, info: Option[LocalizedStringDef]) extends Def
+case class ViewDef[+A <: WidgetDef](title: LocalizedStringDef, prompt: LocalizedStringDef, widget: A, info: Option[LocalizedStringDef]) extends Def
 
 sealed trait WidgetDef extends Def
 

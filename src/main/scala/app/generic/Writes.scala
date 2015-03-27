@@ -1,10 +1,49 @@
 package app.generic
 
+import java.util.UUID
+
 import play.api.libs.json._
 import shapeless._
 import shapeless.labelled._
 
-object GenericWrites {
+trait Writes[-A] {
+  def writes(o: A): JsValue
+}
+
+object Writes {
+  implicit val stringWrites: Writes[String] = new Writes[String] {
+    def writes(o: String) = JsString(o)
+  }
+
+  implicit val intWrites: Writes[Int] = new Writes[Int] {
+    def writes(o: Int) = JsNumber(o)
+  }
+
+  implicit val booleanWrites: Writes[Boolean] = new Writes[Boolean] {
+    def writes(o: Boolean) = JsBoolean(o)
+  }
+
+  implicit val uuidWrites: Writes[UUID] =  new Writes[UUID] {
+    override def writes(o: UUID): JsValue = JsString(o.toString)
+  }
+
+  implicit val bigDecimalWrites: Writes[BigDecimal] = new Writes[BigDecimal] {
+    def writes(o: BigDecimal) = JsNumber(o)
+  }
+
+  implicit def traversableWrites[A](implicit aWrites: Lazy[Writes[A]]): Writes[Traversable[A]] = new Writes[Traversable[A]] {
+    def writes(as: Traversable[A]) = JsArray(as.map(aWrites.value.writes).toSeq)
+  }
+
+  implicit def listWrites[A](implicit aWrites: Lazy[Writes[A]]): Writes[List[A]] = new Writes[List[A]] {
+    def writes(as: List[A]) = JsArray(as.map(aWrites.value.writes).toSeq)
+  }
+
+  implicit def OptionWrites[T](implicit fmt: Lazy[Writes[T]]): Writes[Option[T]] = new Writes[Option[T]] {
+    def writes(o: Option[T]) =
+      o.map(fmt.value.writes).getOrElse(JsNull)
+  }
+
   implicit def writesGeneric[A, R](implicit gen: LabelledGeneric.Aux[A, R], wRepr: Lazy[Writes[R]]): Writes[A] =
     new Writes[A] {
       override def writes(o: A): JsValue = wRepr.value.writes(gen.to(o))
@@ -54,4 +93,10 @@ object GenericWrites {
         case Inr(r) => T.value.writes(r)
       }
     }
+
+  object syntax {
+    implicit class WritesOps[T](x: T)(implicit writesA: Writes[T]) {
+      def toJson: JsValue = writesA.writes(x)
+    }
+  }
 }
