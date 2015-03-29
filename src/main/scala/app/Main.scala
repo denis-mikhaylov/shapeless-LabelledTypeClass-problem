@@ -1,15 +1,7 @@
 package app
 
-// To successfully compile
-import app.a.A // 1. Comment this line out
-import shapeless.LabelledGeneric
+import app.b.Test
 
 object Main extends App {
-
-//  2. Uncomment 3 lines below
-//  sealed trait A[+T]
-//
-//  case class A1[+T](t: T) extends A[T]
-
-  LabelledGeneric[A[String]]
+  Test.lgen // Comment this line out to compile
 }
