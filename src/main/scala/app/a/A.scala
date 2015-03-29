@@ -1,4 +1,4 @@
-package app.test
+package app.a
 
 sealed trait A[+T]
 

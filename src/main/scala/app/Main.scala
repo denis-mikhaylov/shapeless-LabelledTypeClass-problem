@@ -1,7 +1,7 @@
 package app
 
 // To successfully compile
-import app.test.A // 1. Comment this line out
+import app.a.A // 1. Comment this line out
 import shapeless.LabelledGeneric
 
 object Main extends App {
